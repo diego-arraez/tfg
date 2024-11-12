@@ -9,9 +9,11 @@ import SwiftUI
 
 struct MainView: View {
     
+    @EnvironmentObject var autenticacion: Autenticacion
+    
     var body: some View {
          
-        //if login {  //PENDIENTE HACER LOGIN/REGISTRO
+        if autenticacion.estaLogueado { 
             TabView {
                 
                 Ranking()
@@ -34,9 +36,9 @@ struct MainView: View {
                         Label("Cuenta", systemImage: "person.crop.circle.badge.checkmark")
                     }
             }
-        //} else {
-        //    Login()
-        //}
+        } else {
+            Login()
+        }
     }
     
 }
