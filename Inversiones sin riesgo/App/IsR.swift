@@ -1,5 +1,5 @@
 //
-//  Inversiones_sin_riesgoApp.swift
+//  IsR.swift
 //  Inversiones sin riesgo
 //
 //  Created by Diego on 21/10/24.
@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct Inversiones_sin_riesgoApp: App {
+struct IsR: App {
     
     @StateObject private var autenticacion = Autenticacion()
     @State private var isLoading = true

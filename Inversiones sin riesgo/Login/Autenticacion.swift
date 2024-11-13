@@ -15,14 +15,37 @@ class Autenticacion: ObservableObject {
     }
     
     func login(username: String) {
+            UserDefaults.standard.set(username, forKey: "usuario")
+            UserDefaults.standard.set(true, forKey: "bienvenida")
+            
+            UserDefaults.standard.synchronize()
+        
         estaLogueado = true
-        UserDefaults.standard.set(username, forKey: "usuario")
-        UserDefaults.standard.synchronize()
+    }
+    
+    func loginSinBienvenida(username: String) {
+            UserDefaults.standard.set(username, forKey: "usuario")
+            UserDefaults.standard.set(false, forKey: "bienvenida")
+            
+            UserDefaults.standard.synchronize()
+        
+        estaLogueado = true
     }
     
     func logout() {
+            //AJUSTES
+            UserDefaults.standard.removeObject(forKey: "usuario")
+            UserDefaults.standard.removeObject(forKey: "showChart")
+            UserDefaults.standard.removeObject(forKey: "showUser")
+        
+            //MERCADO
+            UserDefaults.standard.removeObject(forKey: "ultimaTransaccion_cobre")
+            UserDefaults.standard.removeObject(forKey: "ultimaTransaccion_plata")
+            UserDefaults.standard.removeObject(forKey: "ultimaTransaccion_oro")
+            UserDefaults.standard.removeObject(forKey: "ultimaTransaccion_diamante")
+        
+            UserDefaults.standard.synchronize()
+        
         estaLogueado = false
-        UserDefaults.standard.removeObject(forKey: "usuario")
-        UserDefaults.standard.synchronize()
     }
 }

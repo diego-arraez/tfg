@@ -10,28 +10,29 @@ import SwiftUI
 struct MainView: View {
     
     @EnvironmentObject var autenticacion: Autenticacion
+    let bienvenida = UserDefaults.standard.bool(forKey: "bienvenida")
     
     var body: some View {
          
         if autenticacion.estaLogueado { 
             TabView {
                 
-                Ranking()
+                RankingView()
                     .tabItem {
                         Label("Ranking", systemImage: "list.star")
                     }
                                 
-                Recursos()
+                ChartView()
                     .tabItem {
-                        Label("Recursos", systemImage: "chart.xyaxis.line")
+                        Label("Mercado", systemImage: "chart.xyaxis.line")
                     }
                 
-                Premios()
+                PremiosView()
                     .tabItem {
                         Label("Premios", systemImage: "trophy")
-                    }
+                    }.badge(bienvenida ? "1" : nil)
                     
-                Cuenta()
+                CuentaView()
                     .tabItem {
                         Label("Cuenta", systemImage: "person.crop.circle.badge.checkmark")
                     }

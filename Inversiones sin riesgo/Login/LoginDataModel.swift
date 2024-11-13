@@ -1,5 +1,5 @@
 //
-//  Login_URLSession.swift
+//  LoginDataModel.swift
 //  Inversiones sin riesgo
 //
 //  Created by Diego on 11/11/24.
@@ -7,12 +7,12 @@
 import Foundation
 import SwiftUI
 
-struct LoginDataModel: Decodable {
+struct LogInDataModel: Decodable {
     var respuesta: String
 }
 
-struct LoginResponseDataModel: Decodable {
-    let logIn: [LoginDataModel]
+struct LogInResponseDataModel: Decodable {
+    let logIn: [LogInDataModel]
     
     enum CodingKeys: String, CodingKey {
         case results
@@ -20,15 +20,15 @@ struct LoginResponseDataModel: Decodable {
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.logIn = try container.decode([LoginDataModel].self, forKey: .results)
+        self.logIn = try container.decode([LogInDataModel].self, forKey: .results)
     }
 }
 
-final class LoginURLSession: ObservableObject {
+final class LogInViewModel: ObservableObject {
     
-    @Published var logIn: [LoginDataModel] = []
+    @Published var logIn: [LogInDataModel] = []
     
-    func getLogin(username: String, password: String, completion: @escaping (String) -> Void) {
+    func getLogIn(username: String, password: String, completion: @escaping (String) -> Void) {
         
         let url = URL(string: "https://39730946.servicio-online.net/tfg/json_login.php?u=\(username)&p=\(password)")
         
@@ -40,7 +40,7 @@ final class LoginURLSession: ObservableObject {
             if let data = data,
                let httpResponse = response as? HTTPURLResponse,
                httpResponse.statusCode == 200 {
-                let logInDataModel = try! JSONDecoder().decode(LoginResponseDataModel.self, from: data)
+                let logInDataModel = try! JSONDecoder().decode(LogInResponseDataModel.self, from: data)
                 DispatchQueue.main.async {
                     
                     self.logIn = logInDataModel.logIn
