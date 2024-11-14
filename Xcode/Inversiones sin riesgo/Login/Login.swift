@@ -26,9 +26,16 @@ struct Login: View {
                 VStack {
                     Form {
                         
-                        Spacer().listRowBackground(Color.clear)
-                        
-                         
+                        HStack{
+                            Spacer()
+                            Image("IsR")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 200, height: 115)
+                                .background(.clear)
+                            Spacer()
+                        } .listRowBackground(Color.clear)
+                            .padding(.top, -18)
                         
                         Section("Datos de acceso:"){
                             TextField("Usuario", text: $username)
@@ -96,7 +103,7 @@ struct Login: View {
                         }.listRowBackground(Color.clear)
                             
                         
-                        Section(footer: Text("Hecho por Diego Arráez - TFG (UOC)")){
+                        Section(footer: Text("© Diego Arráez\nTFG 2024-25 (UOC)")){
                         }
                         
                         
@@ -107,7 +114,7 @@ struct Login: View {
                     
                     
                     
-                }.navigationTitle("Inversiones sin riesgo")
+                }.navigationTitle("Invierte sin riesgo 🤑")
                     .alert(mensajeAlert, isPresented: $showAlert) {
                         Button("OK", action: { mostrarLoading = false })}
                         message: {Text("") }
