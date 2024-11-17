@@ -9,9 +9,13 @@ import SwiftUI
 import AuthenticationServices
 
 struct AjustesView: View {
-        
+    
+    @EnvironmentObject var autenticacion: Autenticacion
+    
     @State var usuario = UserDefaults.standard.string(forKey: "usuario")
     
+    @State private var showAlertLogout = false
+ 
     var body: some View {
         
         NavigationView {
@@ -19,7 +23,11 @@ struct AjustesView: View {
             Form {
                 List {
                     Section ("Ranking") {
-                        //TOGGLE: Filtro de usuario en ranking
+                        Toggle("Mostrar por defecto únicamente tu usuario", isOn: $showUser)
+                            .tint(Color.yellow)
+                            .onChange(of: showUser) { newValue in
+                                updateShowUser(newValue)
+                            }
                         
                     }
                     
@@ -31,10 +39,14 @@ struct AjustesView: View {
                         
                         
                     }
+                            Spacer()
+                        }
+                    }.listRowBackground(Color("fondoLista"))
+                        .listRowSeparator(.hidden)
                     
                     Section() {
                         Button("Cerrar sesión") {
-                            
+                            showAlertLogout = true
                             
                         }.foregroundColor(.blue)
                             .frame(maxWidth: .infinity)
@@ -42,8 +54,13 @@ struct AjustesView: View {
                     }
                     
                     
+		}
                 }
+                .alert("¿Estás seguro?", isPresented: $showAlertLogout) {
                     
+                    Button("Cancelar", role: .cancel) { }
+                    Button("Cerrar sesión") { autenticacion.logout() }
+                } message: { Text("") }
                     
                 
             }//Navigation
