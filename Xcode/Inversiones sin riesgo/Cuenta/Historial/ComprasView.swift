@@ -1,24 +1,24 @@
 //
-//  Premios.swift
+//  ComprasView.swift
 //  Inversiones sin riesgo
 //
-//  Created by Diego on 21/10/24.
+//  Created by Diego on 12/11/24.
 //
 
 import SwiftUI
 
-struct PremiosView: View {
+struct ComprasView: View {
     var body: some View {
         VStack {
-            Image(systemName: "trophy")
+            Image(systemName: "cart.badge.plus")
                 .imageScale(.large)
                 .foregroundStyle(.tint)
-            Text("Premios")
+            Text("Compras")
         }
         .padding()
     }
 }
 
 #Preview {
-    PremiosView()
+    ComprasView()
 }

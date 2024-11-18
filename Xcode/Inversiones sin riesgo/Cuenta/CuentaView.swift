@@ -49,13 +49,13 @@ struct Tab1: View {
 
 struct Tab2: View {
     var body: some View {
-        //ComprasView()
+        ComprasView()
     }
 }
 
 struct Tab3: View {
     var body: some View {
-        //VentasView()
+        VentasView()
     }
 }
 

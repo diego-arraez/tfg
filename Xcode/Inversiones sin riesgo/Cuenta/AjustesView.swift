@@ -13,6 +13,8 @@ struct AjustesView: View {
     @EnvironmentObject var autenticacion: Autenticacion
     
     @State var usuario = UserDefaults.standard.string(forKey: "usuario")
+    @State private var showUser: Bool = UserDefaults.standard.bool(forKey: "showUser")
+
     
     @State private var showAlertLogout = false
  
@@ -40,7 +42,7 @@ struct AjustesView: View {
                         
                     }
                             Spacer()
-                        }
+                        
                     }.listRowBackground(Color("fondoLista"))
                         .listRowSeparator(.hidden)
                     
@@ -55,7 +57,7 @@ struct AjustesView: View {
                     
                     
 		}
-                }
+                
                 .alert("¿Estás seguro?", isPresented: $showAlertLogout) {
                     
                     Button("Cancelar", role: .cancel) { }
@@ -69,6 +71,9 @@ struct AjustesView: View {
             
         }//VIEW
         
-    }
+    
         
+func updateShowUser(_ value: Bool) {
+    UserDefaults.standard.set(value, forKey: "showUser")
+}
 }

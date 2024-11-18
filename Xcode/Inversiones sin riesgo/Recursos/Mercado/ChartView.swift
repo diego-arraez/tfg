@@ -102,7 +102,63 @@ struct ChartView: View {
                             
                         }.onAppear { almacenViewModel.getAlmacen() { respuesta in puntosTotales = respuesta } }
                         
+			VStack {
+                                if viewModel.chart.isEmpty {
+                                    ProgressView()
+                                        .progressViewStyle(.circular)
+                                } else {
+                                    
+                                    Chart {
+                                        
+                                            plotData(for: "cobre", data: viewModel.chart)
+                                        
+                                        
+                                            plotData(for: "plata", data: viewModel.chart)
+                                        
+                                        
+                                            plotData(for: "oro", data: viewModel.chart)
+                                        
+                                        
+                                            plotData(for: "diamante", data: viewModel.chart)
+                                        
+                                    }
+                                    .frame(height: 250)
+                                    .padding(.horizontal)
+                                    .chartXScale(domain: 0...5)
+                                    .chartYScale(domain: 0...getMaxYValue())
+                                    .chartYAxis(.hidden)
+                                    .chartXAxis {
+                                        AxisMarks { value in
+                                            
+                                            AxisValueLabel {
+                                                Text("")
+                                            }
+                                            
+                                            AxisTick(centered: true)
+                                            AxisGridLine(centered: true)
+                                        }
+                                    }
+                                    
+                                    
+                                    
+                                    HStack {
+                                        Text("Hace 5 días")
+                                            .foregroundColor(Color("grisOscuro"))
+                                            .font(.system(size: 10))
+                                        Spacer()
+                                        Text("Ahora")
+                                            .foregroundColor(Color("grisOscuro"))
+                                            .font(.system(size: 10))
+                                    }
+                                }
+                                
+                            }.padding(.vertical, 2)
                     }
+			Section (){
+                            Text("")
+                            Text("")
+                        }.listRowBackground(Color("fondoLista"))
+                        .listRowSeparator(.hidden)
                 }.navigationTitle("Mercado 💰")
                 .onAppear {
                     viewModel.getChart()
@@ -169,6 +225,35 @@ struct ChartView: View {
     }
 
 
+    @ChartContentBuilder
+    private func plotData(for tipo: String, data: [ChartDataModel]) -> some ChartContent {
+        let filteredData = data.filter { $0.tipo == tipo }
+        let color = colorForTipo(tipo: tipo)
+
+        ForEach(filteredData.indices, id: \.self) { index in
+            let currentData = filteredData[index]
+
+            LineMark(
+                x: .value("Index", index),
+                y: .value("Value", Int(currentData.valor) ?? 0),
+                series: .value("Type", tipo)
+            )
+            .foregroundStyle(color.lineColor)
+            .lineStyle(StrokeStyle(lineWidth: 4))
+            .interpolationMethod(.catmullRom)
+
+            PointMark(
+                x: .value("Index", index),
+                y: .value("Value", Int(currentData.valor) ?? 0)
+            )
+            .foregroundStyle(color.pointColor)
+            .annotation(position: .top, alignment: .center) {
+                Text("\(Int(currentData.valor) ?? 0)")
+                    .font(.caption)
+                    .foregroundColor(Color("grisOscuro"))
+            }
+        }
+    }
     
     func mercadoCerrado() -> Bool {
         let calendar = Calendar.current
@@ -192,7 +277,29 @@ struct ChartView: View {
         }
     }
     
+    func getMaxYValue() -> Double {
+        let maxCopper = viewModel.chart.filter { $0.tipo == "cobre" }.compactMap { Double($0.valor) }.max() ?? 0
+        let maxSilver = viewModel.chart.filter { $0.tipo == "plata" }.compactMap { Double($0.valor) }.max() ?? 0
+        let maxGold = viewModel.chart.filter { $0.tipo == "oro" }.compactMap { Double($0.valor) }.max() ?? 0
+        let maxDiamond = viewModel.chart.filter { $0.tipo == "diamante" }.compactMap { Double($0.valor) }.max() ?? 0
+        
+        return max(maxCopper, maxSilver, maxGold, maxDiamond) + 1
+    }
 
+    func colorForTipo(tipo: String) -> (lineColor: Color, pointColor: Color) {
+        switch tipo {
+        case "cobre":
+            return (Color("cobre1"), Color("cobre2"))
+        case "plata":
+            return (.gray, Color("grisOscuro"))
+        case "oro":
+            return (.yellow, .brown)
+        case "diamante":
+            return (Color("diamante"), .blue)
+        default:
+            return (.primary, .primary)
+        }
+    }
     func compararUltimosValores(tipo: String) -> String {
         // Filtra los elementos por tipo y obtiene todos los que coinciden
         let valoresFiltrados = viewModel.chart.filter { $0.tipo == tipo }
@@ -255,7 +362,7 @@ struct ChartView: View {
     
     
 
-    private func resourceRow(tipo: String, cantidad: String, showToggle: Binding<Bool>) -> some View {
+    private func resourceRow(tipo: String, cantidad: String) -> some View {
         HStack {
             Text("\((Int(cantidad) ?? 0))")
                 .font(.caption)
@@ -292,6 +399,11 @@ struct ChartView: View {
 }
 
 
+extension Array where Element == ChartDataModel {
+    var groupedByTipo: [String: [ChartDataModel]] {
+        Dictionary(grouping: self, by: { $0.tipo })
+    }
+}
 // Extensión para convertir la hora de una zona horaria a otra
 extension Date {
     func convertToTimeZone(initTimeZone: TimeZone, timeZone: TimeZone) -> Date {
