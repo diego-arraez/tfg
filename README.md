@@ -1,4 +1,4 @@
-### v.0.1 (PEC2)
+### v.0.1 (PEC2) - ${\textsf{\color{lightgreen}Compilable}}$
 - Primera versión con menus y estructura
 
 ### v.0.2
@@ -24,3 +24,8 @@
 - Cronjob para actualización de valores (cron-job.org).
 - Más propuestas de iconos.
 - Excel de posibles premios a implementar.
+
+### v.0.6 - ${\textsf{\color{lightgreen}Compilable}}$
+- Añadido gráfico de valores en ChartView.
+- Corregidos errores en AjustesView, CuentaView y ChartView para poder compilar correctamente.
+- Añadidos ComprasView y VentasView (historial) sin contenido.
