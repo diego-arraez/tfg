@@ -29,3 +29,10 @@
 - Añadido gráfico de valores en ChartView.
 - Corregidos errores en AjustesView, CuentaView y ChartView para poder compilar correctamente.
 - Añadidos ComprasView y VentasView (historial) sin contenido.
+
+### v.0.7 - ${\textsf{\color{lightgreen}Compilable}}$
+- Añadida funcionalidad de notificaciones en AjustesView (aviso 15 minutos antes del cierre mercado).
+- Posibilidad de mostrar/ocultar recursos en el chart (ChartView).
+- Posibilidad de ocultar el Chart desde AjustesView.
+- Nuevo icono definitivo, adaptado al modo oscuro y tintado de iOS18.
+- Cronjob (php) actualizado para evitar llenar la base de datos, borrando valores anteriores a 7 días.
