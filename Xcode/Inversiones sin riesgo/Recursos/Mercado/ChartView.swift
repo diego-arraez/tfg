@@ -26,6 +26,12 @@ struct ChartView: View {
     @State private var mostrarLoading = true
     @State private var puntosTotales = "0"
 
+    @State private var showCopper = true
+    @State private var showSilver = true
+    @State private var showGold = true
+    @State private var showDiamond = true
+
+    @State private var showChart: Bool = UserDefaults.standard.bool(forKey: "showChart")
     
     var body: some View {
         NavigationView {
@@ -86,41 +92,42 @@ struct ChartView: View {
                                 }
                                 .padding(.vertical, 2)
                                 Divider()
-                                resourceRow(tipo: "cobre", cantidad: account.cobre)
+                                resourceRow(tipo: "cobre", cantidad: account.cobre, showToggle: $showCopper)
                                 Divider()
-                                resourceRow(tipo: "plata", cantidad: account.plata)
+                                resourceRow(tipo: "plata", cantidad: account.plata, showToggle: $showSilver)
                                 Divider()
-                                resourceRow(tipo: "oro", cantidad: account.oro)
+                                resourceRow(tipo: "oro", cantidad: account.oro, showToggle: $showGold)
                                 Divider()
-                                resourceRow(tipo: "diamante", cantidad: account.diamante)
+                                resourceRow(tipo: "diamante", cantidad: account.diamante, showToggle: $showDiamond)
                             }
                             .onAppear {
                                 mostrarLoading = false
-                                
+                                showChart = UserDefaults.standard.bool(forKey: "showChart")
                             }
                             .padding(.vertical, 2) // Reduce el padding vertical
                             
                         }.onAppear { almacenViewModel.getAlmacen() { respuesta in puntosTotales = respuesta } }
                         
-			VStack {
+                        if !showChart {
+                            VStack {
                                 if viewModel.chart.isEmpty {
                                     ProgressView()
                                         .progressViewStyle(.circular)
                                 } else {
                                     
                                     Chart {
-                                        
+                                        if showCopper {
                                             plotData(for: "cobre", data: viewModel.chart)
-                                        
-                                        
+                                        }
+                                        if showSilver {
                                             plotData(for: "plata", data: viewModel.chart)
-                                        
-                                        
+                                        }
+                                        if showGold {
                                             plotData(for: "oro", data: viewModel.chart)
-                                        
-                                        
+                                        }
+                                        if showDiamond {
                                             plotData(for: "diamante", data: viewModel.chart)
-                                        
+                                        }
                                     }
                                     .frame(height: 250)
                                     .padding(.horizontal)
@@ -153,12 +160,16 @@ struct ChartView: View {
                                 }
                                 
                             }.padding(.vertical, 2)
+                            
+                        }
                     }
-			Section (){
+                    if !showChart {
+                        Section (){
                             Text("")
                             Text("")
                         }.listRowBackground(Color("fondoLista"))
                         .listRowSeparator(.hidden)
+                    }
                 }.navigationTitle("Mercado 💰")
                 .onAppear {
                     viewModel.getChart()
@@ -255,6 +266,7 @@ struct ChartView: View {
         }
     }
     
+    
     func mercadoCerrado() -> Bool {
         let calendar = Calendar.current
         let now = Date()
@@ -350,9 +362,9 @@ struct ChartView: View {
         timeFormatter.dateFormat = "HH:mm"
 
         if calendar.isDateInToday(date) {
-            return ""
+            return "(Mañana)"
         } else if calendar.isDateInYesterday(date) {
-            return "(Ayer)"
+            return "" //HOY
         } else {
             return ""
         }
@@ -362,7 +374,7 @@ struct ChartView: View {
     
     
 
-    private func resourceRow(tipo: String, cantidad: String) -> some View {
+    private func resourceRow(tipo: String, cantidad: String, showToggle: Binding<Bool>) -> some View {
         HStack {
             Text("\((Int(cantidad) ?? 0))")
                 .font(.caption)
@@ -393,6 +405,12 @@ struct ChartView: View {
                     .font(.system(size: 10))
             }
             
+            Spacer()
+            
+            if !showChart {
+                Toggle("", isOn: showToggle)
+                    .tint(Color.yellow)
+            }
         }
         .padding(.vertical, 2) // Reduce el padding vertical
     }
@@ -404,6 +422,7 @@ extension Array where Element == ChartDataModel {
         Dictionary(grouping: self, by: { $0.tipo })
     }
 }
+
 // Extensión para convertir la hora de una zona horaria a otra
 extension Date {
     func convertToTimeZone(initTimeZone: TimeZone, timeZone: TimeZone) -> Date {

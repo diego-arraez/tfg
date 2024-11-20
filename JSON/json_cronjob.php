@@ -115,6 +115,10 @@ if (mysqli_connect_errno())
 		 $stmt_diamante = $con->prepare("INSERT INTO `values` (values_tipo, values_valor) VALUES ('diamante',".$diamante.")");
 			$stmt_diamante->execute();
 
+			//borro valores anteriores a 7 días que ya no se usan para evitar llenar la bd
+		$stmt_borrar = $con->prepare("DELETE FROM `values` WHERE values_updated <= NOW() - INTERVAL 7 DAY;");
+		$stmt_borrar->execute();
+
 		 
 		 echo "Cobre: " .$cobre;
 		 echo " --- ";
