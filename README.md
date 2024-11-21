@@ -36,3 +36,10 @@
 - Posibilidad de ocultar el Chart desde AjustesView.
 - Nuevo icono definitivo, adaptado al modo oscuro y tintado de iOS18.
 - Cronjob (php) actualizado para evitar llenar la base de datos, borrando valores anteriores a 7 días.
+
+### v.0.8 - ${\textsf{\color{lightgreen}Compilable}}$
+- Modificada la funcion de login/registro para que el password se guarde encriptado.
+- Base de datos modificada para aumentar la columna users_password de la tabla users a varchar(100).
+- Cambiado el nombre de Premios.swift a PremiosView.swift para que coincida con el nombre de la estructura.
+- En ChartView se han implementado los botones de Compra y Venta (con la funcionalidad de que se oculten si el mercado está cerrado).
+
