@@ -1,5 +1,5 @@
 //
-//  Premios.swift
+//  PremiosView.swift
 //  Inversiones sin riesgo
 //
 //  Created by Diego on 21/10/24.

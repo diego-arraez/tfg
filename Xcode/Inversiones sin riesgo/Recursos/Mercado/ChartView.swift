@@ -33,6 +33,12 @@ struct ChartView: View {
 
     @State private var showChart: Bool = UserDefaults.standard.bool(forKey: "showChart")
     
+    @State private var showAlertCompra = false
+    @State private var showAlertVenta = false
+    @State private var transaccionBloqueada = false
+    
+    @State private var selectedRecurso: String = ""
+    @State private var tipoTransaccion: String = ""
     var body: some View {
         NavigationView {
             ZStack {
@@ -176,6 +182,70 @@ struct ChartView: View {
                     almacenViewModel.getAlmacen { _ in }
                 }
                 
+                if !mercadoCerrado() {
+                    VStack {
+                        Spacer()
+                        HStack {
+                            Spacer()
+                            Button {
+                                self.showAlertCompra = true
+                                
+                            } label: {
+                                Label("Comprar", systemImage: "square.and.arrow.down")
+                                    .foregroundStyle(Color.white)
+                                    .padding()
+                                    .background(Color.yellow)
+                                    .cornerRadius(25)
+                                    .shadow(radius: 5)
+                            }
+                            
+                            .buttonStyle(BorderlessButtonStyle())
+                            .actionSheet(isPresented: $showAlertCompra) {
+                                ActionSheet(
+                                    title: Text("COMPRAR\n"),
+                                    buttons: [
+                                        .default(Text("🟤 Cobre")) { },
+                                        .default(Text("⚪️ Plata")) { },
+                                        .default(Text("🟡 Oro")) { },
+                                        .default(Text("💎 Diamante")) { },
+                                        .cancel(Text("Cancelar"))
+                                    ]
+                                )
+                            }
+                            
+                            
+                            Spacer()
+                            Button {
+                                self.showAlertVenta = true
+                            } label: {
+                                Label("Vender", systemImage: "square.and.arrow.up")
+                                    .foregroundStyle(Color.white)
+                                    .padding()
+                                    .background(Color.yellow)
+                                    .cornerRadius(25)
+                                    .shadow(radius: 5)
+                            }
+                            
+                            .buttonStyle(BorderlessButtonStyle())
+                            .actionSheet(isPresented: $showAlertVenta) {
+                                ActionSheet(
+                                    title: Text("VENDER\n"),
+                                    buttons: [
+                                        .default(Text("🟤 Cobre")) { },
+                                        .default(Text("⚪️ Plata")) { },
+                                        .default(Text("🟡 Oro")) { },
+                                        .default(Text("💎 Diamante")) { },
+                                        .cancel(Text("Cancelar"))
+                                    ]
+                                )
+                            }
+                            Spacer()
+                        }
+                        
+                    }
+                    .padding(.bottom)
+                    .background(Color.clear)
+                }
             }.onAppear {
                 viewModel.getChart()
             }
@@ -235,6 +305,7 @@ struct ChartView: View {
         return Int(ultimoValor.valor) ?? 0
     }
 
+    
 
     @ChartContentBuilder
     private func plotData(for tipo: String, data: [ChartDataModel]) -> some ChartContent {

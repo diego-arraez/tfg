@@ -13,46 +13,46 @@ if (mysqli_connect_errno())
 
 $username = trim($_GET['u']);
 $password = trim($_GET['p']);
+$pass_insert = password_hash($password, PASSWORD_BCRYPT);
 
-$stmt = $con->prepare("SELECT users_id, users_name, users_password, users_premiocanj FROM users WHERE users_name = '".$username."' AND users_password = '".$password."'");
+$stmt = $con->prepare("SELECT users_id, users_name, users_password, users_premiocanj FROM users WHERE users_name = '".$username."'");
 
         $stmt->execute();
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
+		
+	//si existe el usuario, compruebo password	
+	if ($username == $row['users_name']) {
 
-    if ($username == $row['users_name']) {
-            if (strpos($row['users_premiocanj'], "A")>0) {
+		//compruebo password. si es correcto reviso los premios (añado el OR para los usuarios ya creados antes del hash)
+		if (password_verify($password, $row['users_password']) OR $password == $row['users_password']) {
+			if (strpos($row['users_premiocanj'], "A")>0) {
                 $respuesta->respuesta = "LoginOK-A";
             } else {
                 $respuesta->respuesta = "LoginOK";        
             }
-        
-    } else {
-        $stmt = $con->prepare("SELECT users_name, users_id FROM users WHERE users_name = '".$username."'");
+		} else { //si no es correcto, devuevlo LoginNOOK
+			
+			$respuesta->respuesta = "LoginNOOK"; 
+			
+		}
 
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $row = $result->fetch_assoc();
+	
+	} else { //si el usuario no existe, lo creo (registro)
+		
+        $stmt2 = $con->prepare("INSERT INTO users (users_name,users_password, users_premiodisp) VALUES ('".$username."', '".$pass_insert."','A')");
+                $stmt2->execute();  
 
-        if ($username == $row['users_name']) {
-        $respuesta->respuesta = "LoginNOOK";   
+				//reviso el id que se le ha asignado en la base de datos para la tabla ranking
+                $stmt_new = $con->prepare("SELECT users_id FROM users WHERE users_name = '".$username."'");
+                $stmt_new->execute();
+                $result_new = $stmt_new->get_result();
+                $row_new = $result_new->fetch_assoc();
 
-        } else {
-            $stmt2 = $con->prepare("INSERT INTO users (users_name,users_password, users_premiodisp) VALUES ('".$username."', '".$password."','A')");
-                    $stmt2->execute();  
+                $stmt_regalo = $con->prepare("INSERT INTO ranking (ranking_users_id,ranking_cobre,ranking_plata,ranking_oro) VALUES (".$row_new['users_id'].",0,0,0)");
+                $stmt_regalo->execute();  
 
-                    $stmt_new = $con->prepare("SELECT users_id FROM users WHERE users_name = '".$username."'");
-                    $stmt_new->execute();
-                    $result_new = $stmt_new->get_result();
-                    $row_new = $result_new->fetch_assoc();
-
-                    $stmt_regalo = $con->prepare("INSERT INTO ranking (ranking_users_id,ranking_cobre,ranking_plata,ranking_oro) VALUES (".$row_new['users_id'].",0,0,0)");
-                    $stmt_regalo->execute();  
-
-                    $respuesta->respuesta = "LoginOK";    
-
-
-        }
+                $respuesta->respuesta = "LoginOK";    
 
     }
 

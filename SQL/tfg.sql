@@ -67,7 +67,7 @@ CREATE TABLE `ranking` (
 CREATE TABLE `users` (
   `users_id` int NOT NULL,
   `users_name` varchar(100) NOT NULL,
-  `users_password` varchar(30) NOT NULL,
+  `users_password` varchar(100) NOT NULL,
   `users_compras` int NOT NULL DEFAULT '0',
   `users_premiocanj` varchar(50) NOT NULL DEFAULT '-',
   `users_premiodisp` varchar(50) NOT NULL DEFAULT 'A'
