@@ -43,3 +43,7 @@
 - Cambiado el nombre de Premios.swift a PremiosView.swift para que coincida con el nombre de la estructura.
 - En ChartView se han implementado los botones de Compra y Venta (con la funcionalidad de que se oculten si el mercado está cerrado).
 
+### v.0.9 - ${\textsf{\color{lightgreen}Compilable}}$
+- Finalizada funcionalidad de ChartView (implementada lógica de compra y venta).
+- Creado CompraView y VentaView con estructura básica (pendiente la funcionalidad de comprar/vender)
+
