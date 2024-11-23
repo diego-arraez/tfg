@@ -39,6 +39,10 @@ struct ChartView: View {
     
     @State private var selectedRecurso: String = ""
     @State private var tipoTransaccion: String = ""
+    
+    @State private var shouldNavigateToCompra = false
+    @State private var shouldNavigateToVenta = false
+
     var body: some View {
         NavigationView {
             ZStack {
@@ -201,16 +205,7 @@ struct ChartView: View {
                             
                             .buttonStyle(BorderlessButtonStyle())
                             .actionSheet(isPresented: $showAlertCompra) {
-                                ActionSheet(
-                                    title: Text("COMPRAR\n"),
-                                    buttons: [
-                                        .default(Text("🟤 Cobre")) { },
-                                        .default(Text("⚪️ Plata")) { },
-                                        .default(Text("🟡 Oro")) { },
-                                        .default(Text("💎 Diamante")) { },
-                                        .cancel(Text("Cancelar"))
-                                    ]
-                                )
+                                actionSheet()
                             }
                             
                             
@@ -230,11 +225,20 @@ struct ChartView: View {
                             .actionSheet(isPresented: $showAlertVenta) {
                                 ActionSheet(
                                     title: Text("VENDER\n"),
+                                    message: Text("Sólo podrás realizar una transacción en el Mercado por cada recurso hasta la siguiente actualización de valores."),
                                     buttons: [
-                                        .default(Text("🟤 Cobre")) { },
-                                        .default(Text("⚪️ Plata")) { },
-                                        .default(Text("🟡 Oro")) { },
-                                        .default(Text("💎 Diamante")) { },
+                                        .default(Text("🟤 Cobre \(recomendaciones(tipo: "cobre", transaccion: "venta"))")) {
+                                            transaccion(tipo: "cobre", transaccion: "venta")
+                                        },
+                                        .default(Text("⚪️ Plata \(recomendaciones(tipo: "plata", transaccion: "venta"))")) {
+                                            transaccion(tipo: "plata", transaccion: "venta")
+                                        },
+                                        .default(Text("🟡 Oro \(recomendaciones(tipo: "oro", transaccion: "venta"))")) {
+                                            transaccion(tipo: "oro", transaccion: "venta")
+                                        },
+                                        .default(Text("💎 Diamante \(recomendaciones(tipo: "diamante", transaccion: "venta"))")) {
+                                            transaccion(tipo: "diamante", transaccion: "venta")
+                                        },
                                         .cancel(Text("Cancelar"))
                                     ]
                                 )
@@ -246,10 +250,44 @@ struct ChartView: View {
                     .padding(.bottom)
                     .background(Color.clear)
                 }
+                
+                NavigationLink(
+                    destination: CompraView(
+                        viewModel: almacenViewModel,
+                        selectedRecurso: selectedRecurso,
+                        precioPorUnidad: getPriceForRecurso(recurso: selectedRecurso),
+                        recursosUser: getCantidadForRecurso(recurso: selectedRecurso),
+                        coinsUser: String(lastCoins()),
+                        puntosTotales: getPuntosTotales()
+                    ),
+                    isActive: $shouldNavigateToCompra
+                ) {
+                    EmptyView()
+                }
+                
+                NavigationLink(
+                    destination: VentaView(
+                        viewModel: almacenViewModel,
+                        selectedRecurso: selectedRecurso,
+                        precioPorUnidad: getPriceForRecurso(recurso: selectedRecurso),
+                        recursosUser: getCantidadForRecurso(recurso: selectedRecurso),
+                        coinsUser: String(lastCoins()),
+                        puntosTotales: getPuntosTotales()
+                    ),
+                    isActive: $shouldNavigateToVenta
+                ) {
+                    EmptyView()
+                }
+                
+                
             }.onAppear {
                 viewModel.getChart()
             }
-                
+            
+            .alert("\(selectedRecurso.capitalized):\n🚫 Tienes que esperar al siguiente cierre de mercado\n", isPresented: $transaccionBloqueada) {
+                Button("OK", role: .cancel) {}
+            } message: { Text("Para cada recurso sólo puedes realizar una transacción en el Mercado desde la última actualización de valores.\n\nPuedes esperar a la siguiente actualización o probar con otro recurso.") }
+            
         }
         
     }
@@ -292,7 +330,19 @@ struct ChartView: View {
         
         return dateFormatter.string(from: localDate)
     }
-     
+        
+    func transaccion(tipo: String, transaccion: String) {
+        selectedRecurso = tipo
+        if puedeTransaccion(recurso: selectedRecurso) {
+            if transaccion == "compra" {
+                self.shouldNavigateToCompra = true
+            } else {
+                self.shouldNavigateToVenta = true
+            }
+        } else {
+                transaccionBloqueada = true
+        }
+    }
     
     func lastCoins() -> Int {
         return Int(viewModel.chart.last?.coins ?? "0") ?? 0
@@ -305,7 +355,65 @@ struct ChartView: View {
         return Int(ultimoValor.valor) ?? 0
     }
 
+    func getPriceForRecurso(recurso: String) -> Int {
+        if let data = viewModel.chart.last(where: { $0.tipo == recurso }) {
+            return Int(data.valor) ?? 0
+        }
+        return 0
+    }
+
+    func getCantidadForRecurso(recurso: String) -> Int {
+        guard let almacen = almacenViewModel.account.first else { return 0 }
+        switch recurso {
+        case "cobre": return Int(almacen.cobre) ?? 0
+        case "plata": return Int(almacen.plata) ?? 0
+        case "oro": return Int(almacen.oro) ?? 0
+        case "diamante": return Int(almacen.diamante) ?? 0
+        default: return 0
+        }
+    }
     
+    func getPuntosTotales() -> Int {
+        
+            let puntosCobre = getCantidadForRecurso(recurso: "cobre") * getUltimoValor(tipo: "cobre")
+            let puntosPlata = getCantidadForRecurso(recurso: "plata") * getUltimoValor(tipo: "plata")
+            let puntosOro = getCantidadForRecurso(recurso: "oro") * getUltimoValor(tipo: "oro")
+            let puntosDiamante = getCantidadForRecurso(recurso: "diamante") * getUltimoValor(tipo: "diamante")
+        
+        return puntosCobre + puntosPlata + puntosOro + puntosDiamante
+    }
+    
+    func actionSheet() -> ActionSheet {
+            if lastCoins() == 0 {
+                return ActionSheet(
+                    title: Text("Comprar\n"),
+                    message: Text("🚫 No dispones de coins para realizar ninguna compra. Vende algún recurso para obtener coins."),
+                    buttons: [
+                        .cancel(Text("Cancelar"))
+                    ]
+                )
+            } else {
+                return ActionSheet(
+                    title: Text("Comprar\n"),
+                    message: Text("Sólo podrás realizar una transacción en el Mercado por cada recurso hasta la siguiente actualización de valores."),
+                    buttons: [
+                        .default(Text("🟤 Cobre \(recomendaciones(tipo: "cobre", transaccion: "compra"))")) {
+                            transaccion(tipo: "cobre", transaccion: "compra")
+                        },
+                        .default(Text("⚪️ Plata \(recomendaciones(tipo: "plata", transaccion: "compra"))")) {
+                            transaccion(tipo: "plata", transaccion: "compra")
+                        },
+                        .default(Text("🟡 Oro \(recomendaciones(tipo: "oro", transaccion: "compra"))")) {
+                            transaccion(tipo: "oro", transaccion: "compra")
+                        },
+                        .default(Text("💎 Diamante \(recomendaciones(tipo: "diamante", transaccion: "compra"))")) {
+                            transaccion(tipo: "diamante", transaccion: "compra")
+                        },
+                        .cancel(Text("Cancelar"))
+                    ]
+                )
+            }
+        }
 
     @ChartContentBuilder
     private func plotData(for tipo: String, data: [ChartDataModel]) -> some ChartContent {
@@ -337,6 +445,46 @@ struct ChartView: View {
         }
     }
     
+    func puedeTransaccion(recurso: String) -> Bool {
+        if let ultimaVenta = UserDefaults.standard.object(forKey: "ultimaTransaccion_\(recurso)") as? Date {
+            if let lastUpdateDate = obtenerUltimaFechaHoraActualizacion() {
+                
+                // Si la última venta es después de la última actualización, no se permite la transacción
+                if ultimaVenta > lastUpdateDate {
+                    return false
+                }
+            }
+        }
+        return true
+    }
+    
+    func obtenerUltimaFechaHoraActualizacion() -> Date? {
+        let calendar = Calendar.current
+        let now = Date()
+        
+        // Obtener la fecha de hoy a las 13:30 GMT
+        var components = calendar.dateComponents([.year, .month, .day], from: now)
+        components.hour = 13
+        components.minute = 30
+        components.second = 0
+
+        let gmtTimeZone = TimeZone(abbreviation: "GMT")
+        components.timeZone = gmtTimeZone
+
+        guard let todayUpdateDate = calendar.date(from: components) else {
+            return nil
+        }
+
+        // Si la fecha actual es antes de la actualización de hoy, usar la actualización de ayer
+        if now < todayUpdateDate {
+            if let yesterday = calendar.date(byAdding: .day, value: -1, to: todayUpdateDate) {
+                return yesterday
+            }
+        }
+
+        // De lo contrario, usar la actualización de hoy
+        return todayUpdateDate
+    }
     
     func mercadoCerrado() -> Bool {
         let calendar = Calendar.current
@@ -383,6 +531,7 @@ struct ChartView: View {
             return (.primary, .primary)
         }
     }
+    
     func compararUltimosValores(tipo: String) -> String {
         // Filtra los elementos por tipo y obtiene todos los que coinciden
         let valoresFiltrados = viewModel.chart.filter { $0.tipo == tipo }
@@ -410,6 +559,39 @@ struct ChartView: View {
         }
     }
     
+    func recomendaciones(tipo: String, transaccion: String) -> String {
+        // Filtra los elementos por tipo y obtiene todos los que coinciden
+        let valoresFiltrados = viewModel.chart.filter { $0.tipo == tipo }
+        
+        // Verifica si hay al menos dos elementos en el resultado filtrado
+        guard valoresFiltrados.count > 1 else {
+            return "" // Valor por defecto si no hay suficientes elementos
+        }
+        
+        // Obtiene el último y el penúltimo valor en la lista filtrada
+        let ultimoValor = valoresFiltrados.last!
+        let penultimoValor = valoresFiltrados[valoresFiltrados.count - 2]
+        
+        // Convierte los valores a enteros, si es posible
+        let ultimo = Int(ultimoValor.valor) ?? 0
+        let penultimo = Int(penultimoValor.valor) ?? 0
+        
+        // Compara los valores y devuelve el resultado correspondiente
+        if transaccion == "venta" {
+            if penultimo < ultimo {
+                return "🔝"
+            } else {
+                return ""
+            }
+        } else { //compra
+            if penultimo > ultimo {
+                return "🔝"
+            } else {
+                return ""
+            }
+        }
+    }
+
 
     func getNextUpdate() -> String {
         guard let ultimaFecha = viewModel.chart.last(where: { $0.tipo == "diamante" }) else {
