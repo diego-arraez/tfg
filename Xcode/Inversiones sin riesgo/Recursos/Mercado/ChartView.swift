@@ -205,7 +205,7 @@ struct ChartView: View {
                             
                             .buttonStyle(BorderlessButtonStyle())
                             .actionSheet(isPresented: $showAlertCompra) {
-                                actionSheet()
+                                actionSheet_Compra()
                             }
                             
                             
@@ -223,25 +223,7 @@ struct ChartView: View {
                             
                             .buttonStyle(BorderlessButtonStyle())
                             .actionSheet(isPresented: $showAlertVenta) {
-                                ActionSheet(
-                                    title: Text("VENDER\n"),
-                                    message: Text("Sólo podrás realizar una transacción en el Mercado por cada recurso hasta la siguiente actualización de valores."),
-                                    buttons: [
-                                        .default(Text("🟤 Cobre \(recomendaciones(tipo: "cobre", transaccion: "venta"))")) {
-                                            transaccion(tipo: "cobre", transaccion: "venta")
-                                        },
-                                        .default(Text("⚪️ Plata \(recomendaciones(tipo: "plata", transaccion: "venta"))")) {
-                                            transaccion(tipo: "plata", transaccion: "venta")
-                                        },
-                                        .default(Text("🟡 Oro \(recomendaciones(tipo: "oro", transaccion: "venta"))")) {
-                                            transaccion(tipo: "oro", transaccion: "venta")
-                                        },
-                                        .default(Text("💎 Diamante \(recomendaciones(tipo: "diamante", transaccion: "venta"))")) {
-                                            transaccion(tipo: "diamante", transaccion: "venta")
-                                        },
-                                        .cancel(Text("Cancelar"))
-                                    ]
-                                )
+                                actionSheet_Venta()
                             }
                             Spacer()
                         }
@@ -383,10 +365,10 @@ struct ChartView: View {
         return puntosCobre + puntosPlata + puntosOro + puntosDiamante
     }
     
-    func actionSheet() -> ActionSheet {
+    func actionSheet_Compra() -> ActionSheet {
             if lastCoins() == 0 {
                 return ActionSheet(
-                    title: Text("Comprar\n"),
+                    title: Text("COMPRAR\n"),
                     message: Text("🚫 No dispones de coins para realizar ninguna compra. Vende algún recurso para obtener coins."),
                     buttons: [
                         .cancel(Text("Cancelar"))
@@ -394,7 +376,7 @@ struct ChartView: View {
                 )
             } else {
                 return ActionSheet(
-                    title: Text("Comprar\n"),
+                    title: Text("COMPRAR\n"),
                     message: Text("Sólo podrás realizar una transacción en el Mercado por cada recurso hasta la siguiente actualización de valores."),
                     buttons: [
                         .default(Text("🟤 Cobre \(recomendaciones(tipo: "cobre", transaccion: "compra"))")) {
@@ -411,6 +393,65 @@ struct ChartView: View {
                         },
                         .cancel(Text("Cancelar"))
                     ]
+                )
+            }
+        }
+    
+    func actionSheet_Venta() -> ActionSheet {
+            if getPuntosTotales() == 0 {
+                return ActionSheet(
+                    title: Text("VENDER\n"),
+                    message: Text("🚫 No dispones de recursos para realizar una venta."),
+                    buttons: [
+                        .cancel(Text("Cancelar"))
+                    ]
+                )
+            } else {
+                let botonesRecursos: [ActionSheet.Button] = {
+                    var botonesRecursos: [ActionSheet.Button] = []
+                    
+                    if getCantidadForRecurso(recurso: "cobre") != 0 {
+                        botonesRecursos.append(
+                            .default(Text("🟤 Cobre \(recomendaciones(tipo: "cobre", transaccion: "venta"))")) {
+                                transaccion(tipo: "cobre", transaccion: "venta")
+                            }
+                        )
+                    }
+                    
+                    if getCantidadForRecurso(recurso: "plata") != 0 {
+                        botonesRecursos.append(
+                            .default(Text("⚪️ Plata \(recomendaciones(tipo: "plata", transaccion: "venta"))")) {
+                                transaccion(tipo: "plata", transaccion: "venta")
+                            }
+                        )
+                    }
+                    
+                    if getCantidadForRecurso(recurso: "oro") != 0 {
+                        botonesRecursos.append(
+                            .default(Text("🟡 Oro \(recomendaciones(tipo: "oro", transaccion: "venta"))")) {
+                                transaccion(tipo: "oro", transaccion: "venta")
+                            }
+                        )
+                    }
+                    
+                    if getCantidadForRecurso(recurso: "diamante") != 0 {
+                        botonesRecursos.append(
+                            .default(Text("💎 Diamante \(recomendaciones(tipo: "diamante", transaccion: "venta"))")) {
+                                transaccion(tipo: "diamante", transaccion: "venta")
+                            }
+                        )
+                    }
+                    
+                    // Botón "Cancelar"
+                    botonesRecursos.append(.cancel(Text("Cancelar")))
+                    
+                    return botonesRecursos
+                }()
+                
+                return ActionSheet(
+                    title: Text("VENDER\n"),
+                    message: Text("Sólo podrás realizar una transacción en el Mercado por cada recurso hasta la siguiente actualización de valores."),
+                    buttons: botonesRecursos
                 )
             }
         }
