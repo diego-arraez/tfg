@@ -51,3 +51,8 @@
 - Funcionalidad de Compra/Venta implementada.
 - Funcionalidad del historial de Compra y Venta implementadas.
 - ChartView: se añade la comprobación de recursos antes de mostrar los que puede vender (como ya se hacía con los coins en la compra)
+
+### v.0.11 - ${\textsf{\color{lightgreen}Compilable} - {\color{red}CANDIDATE}}$
+- Vista de Premios finalizada con Premios disponibles, canjeados y por conseguir.
+- JSON con el listado de premios a partir del Excel.
+- Añadida la opcion de "arrastrar para refrescar" en el ChartView.
