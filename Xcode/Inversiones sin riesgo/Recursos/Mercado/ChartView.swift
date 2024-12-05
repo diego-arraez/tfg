@@ -185,6 +185,10 @@ struct ChartView: View {
                     viewModel.getChart()
                     almacenViewModel.getAlmacen { _ in }
                 }
+                .refreshable {
+                    viewModel.getChart()
+                    almacenViewModel.getAlmacen { _ in }
+                }
                 
                 if !mercadoCerrado() {
                     VStack {
