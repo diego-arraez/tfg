@@ -47,3 +47,7 @@
 - Finalizada funcionalidad de ChartView (implementada lógica de compra y venta).
 - Creado CompraView y VentaView con estructura básica (pendiente la funcionalidad de comprar/vender)
 
+### v.0.10 - ${\textsf{\color{lightgreen}Compilable}}$
+- Funcionalidad de Compra/Venta implementada.
+- Funcionalidad del historial de Compra y Venta implementadas.
+- ChartView: se añade la comprobación de recursos antes de mostrar los que puede vender (como ya se hacía con los coins en la compra)
