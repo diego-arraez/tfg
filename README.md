@@ -56,3 +56,13 @@
 - Vista de Premios finalizada con Premios disponibles, canjeados y por conseguir.
 - JSON con el listado de premios a partir del Excel.
 - Añadida la opcion de "arrastrar para refrescar" en el ChartView.
+
+### v.0.12 (PEC3) - ${\textsf{\color{lightgreen}Compilable} - {\color{red}CANDIDATE}}$
+- Actualizado cronjob para que calcule segun transacciones de usuarios.
+- Correcciones en el json de premios que no consultaba la columna correcta.
+- Nueva tabla "mina" añadida en la estructura de la base de datos.
+- Si el usuario es nuevo, se le redirige a "Premios" en vez de a "Ranking" una vez logueado.
+- Creado color "BnW" para la correcta representación de las fuentes en modo oscuro, eliminado el color "filas" por duplicidad y modificada la transparencia de "verdePastel".
+- Añadidos mensajes de información para usuarios nuevos.
+- Añadido mensaje de información del juego en la ventana de login/registro,
+- Cambiado "Nombre de usuario" por "Nombre de empresa ficticia" en ventana de login/registro.
