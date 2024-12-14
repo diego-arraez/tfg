@@ -38,7 +38,7 @@ struct Login: View {
                             .padding(.top, -18)
                         
                         Section("Datos de acceso:"){
-                            TextField("Usuario", text: $username)
+                            TextField("Nombre de tu empresa ficticia", text: $username)
                                 .keyboardType(.default)
                                 .disableAutocorrection(true)
                                 .autocapitalization(.none)
@@ -50,6 +50,14 @@ struct Login: View {
                             
                         }
                         
+                        
+                        Section(footer: Text("\(Image(systemName: "gamecontroller.fill")) Recuerda, esto es solo un juego diseñado para aprender y divertirte. No utilizarás dinero real ni asumirás riesgos financieros. Disfruta la experiencia sin preocupaciones y aprovecha para explorar estrategias de inversión en un entorno completamente seguro.")){
+                            
+                        }.listRowBackground(Color.clear)
+                        
+                        
+                        
+                        
                         Section(){
                                                         
                             Button() {
@@ -58,7 +66,7 @@ struct Login: View {
                                     mensajeAlert = "🚫 No puedes dejar un campo vacío"
                                 } else if (username.count < 4) {
                                     showAlert = true
-                                    mensajeAlert = "🚫 El nombre de usuario debe tener más de 4 carácteres"
+                                    mensajeAlert = "🚫 El nombre de empresa debe tener más de 4 carácteres"
                                 } else if (password.count < 4) {
                                     showAlert = true
                                     mensajeAlert = "🚫 La contraseña debe tener más de 4 carácteres"
@@ -77,7 +85,7 @@ struct Login: View {
                                             mensajeAlert = "⚠️ Contraseña incorrecta"
                                         } else {
                                             showAlert = true
-                                            mensajeAlert = "⚠️ Usuario/contraseña incorrecta"
+                                            mensajeAlert = "⚠️ Empresa/contraseña incorrecta"
                                         }
                                     mostrarLoading = false
                                     }

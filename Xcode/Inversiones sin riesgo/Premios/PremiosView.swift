@@ -131,7 +131,7 @@ struct PremiosView: View {
                                                             
                                                             Text(item.descripcion)
                                                             //.font(.headline)
-                                                                .foregroundStyle(Color.black)
+                                                                .foregroundColor(Color("BnW"))
                                                             
                                                             
                                                             Spacer()
@@ -226,11 +226,11 @@ struct PremiosView: View {
                                     }
                                 } else {
                                     
-                                    Text("Sin premios disponibles")
+                                    Text("Sin premios disponibles 🥲")
                                     
                                 }
                             }.onAppear { mostrarLoading1 = false }
-                                .background(Color("fondoLista"))
+                                .background(Color("filas"))
 
                             
                         }.onAppear {
@@ -386,7 +386,7 @@ struct PremiosView: View {
                                     }
                                 } else {
                                     
-                                    Text("Sin premios canjeados")
+                                    Text("Sin premios canjeados 🤪")
                                     
                                 }
                             }.onAppear { mostrarLoading2 = false }
@@ -534,7 +534,7 @@ struct PremiosView: View {
                                     }
                                 } else {
                                     
-                                    Text("Sin premios por conseguir")
+                                    Text("Sin premios por conseguir 🤩")
                                     
                                 }
                                 

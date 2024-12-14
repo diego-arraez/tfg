@@ -11,6 +11,9 @@ import Charts
 struct ChartView: View {
    
     @State var usuario = UserDefaults.standard.string(forKey: "usuario")
+    @State var mensajeChart = UserDefaults.standard.bool(forKey: "mensajeChart")
+    @State var segundoMensajeChart = false
+    
     @StateObject var viewModel: ChartViewModel = ChartViewModel()
     @StateObject var almacenViewModel: AlmacenViewModel = AlmacenViewModel()
     
@@ -180,7 +183,7 @@ struct ChartView: View {
                         }.listRowBackground(Color("fondoLista"))
                         .listRowSeparator(.hidden)
                     }
-                }.navigationTitle("Mercado 💰")
+                }.navigationTitle("Mercado 🤝")
                 .onAppear {
                     viewModel.getChart()
                     almacenViewModel.getAlmacen { _ in }
@@ -236,6 +239,7 @@ struct ChartView: View {
                     .padding(.bottom)
                     .background(Color.clear)
                 }
+                    
                 
                 NavigationLink(
                     destination: CompraView(
@@ -269,6 +273,19 @@ struct ChartView: View {
             }.onAppear {
                 viewModel.getChart()
             }
+            .alert("⚠️ ¡Atención!\n", isPresented: $mensajeChart) {
+                
+                Button("Siguiente", role: .cancel) {
+                    mensajeChart = false
+                    segundoMensajeChart = true
+                }
+            } message: { Text("El mercado de recursos está en constante movimiento, y tus decisiones tienen un impacto directo sobre el resto.\n\nSi todo el mundo se lanza a comprar oro, su valor podría desplomarse en el próximo cierre del mercado. Lo mismo pasa con otros recursos: la oferta y la demanda mandan aquí, ¡así que planifica bien tus movimientos y adelántate a tus rivales!\n\nPero eso no es todo…") }
+            
+            .alert("", isPresented: $segundoMensajeChart) {
+                    
+                    Button("¡Vamos!", role: .cancel) { segundoMensajeChart = false
+                        UserDefaults.standard.set(false, forKey: "mensajeChart") }
+                } message: { Text("En este mundo siempre hay lugar para lo inesperado. De vez en cuando, tu empresa podría encontrarse con oportunidades únicas, como descubrir una mina de oro oculta. ¿Te arriesgarás a comprarlo a un precio especial o preferirás jugar sobre seguro y dejarlo escapar?\n\n¡Recuerda que cada decisión cuenta para subir en el ranking!") }
             
             .alert("\(selectedRecurso.capitalized):\n🚫 Tienes que esperar al siguiente cierre de mercado\n", isPresented: $transaccionBloqueada) {
                 Button("OK", role: .cancel) {}
@@ -692,14 +709,14 @@ struct ChartView: View {
             
             VStack (alignment: .leading) {
                 Text(tipo.capitalized)
-                    .foregroundColor(Color.black)
+                    .foregroundColor(Color("BnW"))
                 
                 Text("Mi cartera: \((Int(cantidad) ?? 0) * getUltimoValor(tipo: tipo)) puntos")
                     .foregroundColor(Color("grisOscuro"))
                     .font(.system(size: 10))
                 
                 Text("Valor actual: \(getUltimoValor(tipo: tipo)) puntos \(compararUltimosValores(tipo: tipo))")
-                    .foregroundColor(Color.black)
+                    .foregroundColor(Color("BnW"))
                     .font(.system(size: 10))
             }
             

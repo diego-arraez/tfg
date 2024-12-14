@@ -34,6 +34,7 @@ struct CuentaView: View {
                 .frame(width: UIScreen.main.bounds.width, alignment: .center)
                 .padding(.horizontal, 12)
                 .navigationTitle("¡Hola \(usuario ?? "")! 😊")
+                .navigationBarTitleDisplayMode(.inline)
                 .background(Color("fondoLista"))
             }.onAppear{ tabIndex = 0 }
             

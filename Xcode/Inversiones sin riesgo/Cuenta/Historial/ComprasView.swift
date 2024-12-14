@@ -99,7 +99,7 @@ struct ComprasView: View {
                                             .foregroundColor(Color("grisClaro"))
                                         
                                         Text(compras.idC == "0" ? textoSinCompras : compras.pideTipoC == "coins" ? "-" : "\(compras.puntosC) puntos")
-                                            .foregroundColor(compras.pideTipoC == "coins" ? Color(.clear) : Color.black)
+                                            .foregroundColor(compras.pideTipoC == "coins" ? Color(.clear) : Color("BnW"))
                                     }
                                 Spacer()
                                     Text(compras.ofreceTipoC == "inapp" ? "💵" : compras.ofreceUnidadC)

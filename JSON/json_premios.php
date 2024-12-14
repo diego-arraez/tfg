@@ -145,7 +145,7 @@ $stmt3 = $con->prepare("SELECT compraventa_users_id_venta FROM compraventa WHERE
 
         while ($row3 = $result3->fetch_assoc()){
 
-                $idUsuarioVenta = $row3['history_users_id_venta'];
+                $idUsuarioVenta = $row3['compraventa_users_id_venta'];
 
                 if ($idUsuarioVenta == 0) { //mercado de valores
                                 $contadorComprasMercado = $contadorComprasMercado + 1;
@@ -171,7 +171,7 @@ $stmt4 = $con->prepare("SELECT COUNT(compraventa_id) as compraventa_ventas_count
         $result4 = $stmt4->get_result();
         while ($row4 = $result4->fetch_assoc()){
 
-                $contadorVentas = $row4['history_ventas_count'];
+                $contadorVentas = $row4['compraventa_ventas_count'];
 
                 if ($contadorVentas >= 1) {//C: 1 venta
                     $newPremiosDisponibles = $newPremiosDisponibles . "C";

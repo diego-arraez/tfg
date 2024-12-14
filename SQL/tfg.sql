@@ -88,6 +88,20 @@ CREATE TABLE `values` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
 
 
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `mina`
+--
+
+CREATE TABLE `mina` (
+  `mina_id` int NOT NULL AUTO_INCREMENT,
+  `mina_tipo` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `mina_valor` int NOT NULL,
+  PRIMARY KEY (`mina_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+
+
 --
 -- Índices para tablas volcadas
 --
@@ -117,6 +131,12 @@ ALTER TABLE `values`
   ADD PRIMARY KEY (`values_id`);
 
 --
+-- Indices de la tabla `mina`
+--
+ALTER TABLE `mina`
+  ADD PRIMARY KEY (`mina_id`);
+
+--
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
@@ -143,6 +163,13 @@ ALTER TABLE `users`
 --
 ALTER TABLE `values`
   MODIFY `values_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+COMMIT;
+
+--
+-- AUTO_INCREMENT de la tabla `mina`
+--
+ALTER TABLE `mina`
+  MODIFY `mina_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

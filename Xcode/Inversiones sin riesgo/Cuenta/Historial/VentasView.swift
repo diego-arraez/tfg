@@ -71,7 +71,7 @@ struct VentasView: View {
                                         .foregroundColor(Color("grisClaro"))
                                     
                                     Text(ventas.idV == "0" ? textoSinVentas : "\(ventas.puntosV) coins")
-                                        .foregroundColor(Color.black)
+                                        .foregroundColor(Color("BnW"))
                                 }
                                 
                                 Spacer()

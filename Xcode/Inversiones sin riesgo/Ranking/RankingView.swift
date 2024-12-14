@@ -16,9 +16,13 @@ struct RankingView: View {
     
     @StateObject var viewModel: RankingViewModel = RankingViewModel()
     @StateObject var viewChartModel: ChartViewModel = ChartViewModel()
+    @StateObject var viewOfertaModel: OfertaViewModel = OfertaViewModel()
     
     @State private var mostrarLoading = true
     @State private var mostrarBienvenida = UserDefaults.standard.bool(forKey: "bienvenida")
+    
+    @State private var mostrarOferta = false
+    @State private var puntosUsuario: Int = 0
     
     @State private var tiempoRestante = ""
     @State private var timer: Timer? = nil
@@ -185,14 +189,14 @@ struct RankingView: View {
                                                 .font(.system(size: 18))
                                                 .frame(width: 42.0, height: 10.0)
                                                 .padding(10)
-                                                .foregroundColor(Color.black)
+                                                .foregroundColor(Color("BnW"))
                                             
                                             
                                             
                                             
                                             Text("\(ranking.points) puntos")
                                                 .font(.system(size: 13))
-                                                .foregroundColor(Color.black)
+                                                .foregroundColor(Color("BnW"))
                                             
                                         }
                                         
@@ -202,6 +206,7 @@ struct RankingView: View {
                                         VStack(alignment: .trailing) {
                                             Text(ranking.position == "1" ? "👑 \(ranking.name)" : ranking.name)
                                                 .frame(maxWidth: .infinity, alignment: .trailing)
+                                            
                                             
                                             
                                             HStack{
@@ -265,9 +270,11 @@ struct RankingView: View {
                                         }
                                         
                                     }.listRowBackground(usuario == ranking.name ? Color("yellowLight") : Color("filas"))
+                                        
      
                                 }.onAppear {
                                     mostrarLoading = false
+                                    puntosUsuario = obtenerPuntosUsuario()
                                 }
                             }
                             
@@ -279,6 +286,7 @@ struct RankingView: View {
                             mostrarBienvenida = UserDefaults.standard.bool(forKey: "bienvenida")
                             viewModel.getRanking()
                             viewChartModel.getChart()
+                            viewOfertaModel.getOferta()
                             showUser = UserDefaults.standard.bool(forKey: "showUser")
                             if mostrarBienvenida {
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
@@ -286,6 +294,15 @@ struct RankingView: View {
                                 }
                             }
                         }
+                        .alert("🎉 ¡Enhorabuena!\n", isPresented: $mostrarOferta) {
+                            
+                            Button("😱 No", role: .cancel) {
+                                mostrarOferta = false
+                            }
+                            Button("🤑 ¡Sí!") {
+                                mostrarOferta = false
+                            }
+                        } message: { Text("¡Tu empresa \(usuario ?? "") acaba de encontrar una mina de Y!\n\nTienes la posibilidad de añadir X unidades de Y (Z puntos) a tu almacén a cambio de TODOS tus recursos (\(puntosUsuario) puntos). \n\n⚠️ Recuerda que esta acción afectará al valor de Y para ti y el resto de empresas.\n\n¿Estás de acuerdo?") }
                     }.navigationTitle("Ranking 🚀")
                     
                 
@@ -301,10 +318,12 @@ struct RankingView: View {
                     Text("🎁 ¡Regalo de bienvenida!\nVisita la sección de 'Premios' para reclamar tu regalo.")
                         .font(.headline)
                         .foregroundColor(.white)
-                        .padding()
-                        .frame(width: geometry.size.width)
+                        .padding(.vertical, 30)
+                        .frame(width: geometry.size.width * 0.96)
                         .background(Color("verdepastel"))
-                        .offset(y: -geometry.safeAreaInsets.top + 40) // Posición en la parte superior
+                        .cornerRadius(10)
+                        .shadow(radius: 10)
+                        .position(x: geometry.size.width / 2, y: geometry.size.height - 50)
                     
                 }
                 
@@ -327,6 +346,16 @@ struct RankingView: View {
                 return viewModel.ranking
             }
         }
+
+    private func obtenerPuntosUsuario() -> Int {
+        if let puntosString = viewModel.ranking.first(where: { $0.name == usuario })?.points,
+               let puntosInt = Int(puntosString) {
+                print("Puntos encontrados: \(puntosInt)")
+                return puntosInt
+            }
+            print("No se encontraron puntos o no se pudo convertir a Int")
+            return 0
+    }
         
     func convertToLocalTime(hour: Int, minute: Int, fromTimeZoneAbbreviation: String) -> String? {
         // Crear el calendario y la fecha actual

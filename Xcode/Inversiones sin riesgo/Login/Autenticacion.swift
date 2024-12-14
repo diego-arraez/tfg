@@ -17,15 +17,17 @@ class Autenticacion: ObservableObject {
     func login(username: String) {
             UserDefaults.standard.set(username, forKey: "usuario")
             UserDefaults.standard.set(true, forKey: "bienvenida")
-            
+            UserDefaults.standard.set(true, forKey: "mensajeChart")
+        
             UserDefaults.standard.synchronize()
         
         estaLogueado = true
     }
     
-    func loginSinBienvenida(username: String) {
+    func loginSinBienvenida(username: String) { //cuando no es un usuario nuevo
             UserDefaults.standard.set(username, forKey: "usuario")
             UserDefaults.standard.set(false, forKey: "bienvenida")
+            UserDefaults.standard.set(true, forKey: "mensajeChart")
             
             UserDefaults.standard.synchronize()
         
@@ -37,6 +39,7 @@ class Autenticacion: ObservableObject {
             UserDefaults.standard.removeObject(forKey: "usuario")
             UserDefaults.standard.removeObject(forKey: "showChart")
             UserDefaults.standard.removeObject(forKey: "showUser")
+            UserDefaults.standard.removeObject(forKey: "mensajeChart")
         
             //MERCADO
             UserDefaults.standard.removeObject(forKey: "ultimaTransaccion_cobre")
