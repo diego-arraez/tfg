@@ -1,3 +1,6 @@
+## Emulador para Final release 1.0: https://appetize.io/app/b_rug4opuulqbsanumxjv5uifvem
+
+### Changelog:
 ### v.0.1 (PEC2) - ${\textsf{\color{lightgreen}Compilable}}$
 - Primera versión con menus y estructura
 
@@ -66,3 +69,8 @@
 - Añadidos mensajes de información para usuarios nuevos.
 - Añadido mensaje de información del juego en la ventana de login/registro,
 - Cambiado "Nombre de usuario" por "Nombre de empresa ficticia" en ventana de login/registro.
+
+### v.1.0 (PEC4 - PEC5)  ${\textsf{\color{lightgreen}Compilable} - {\color{red}FINAL}}$
+- Se crea la funcionalidad de las ofertas de minas encontradas.
+- Se adapta el ranking para mostrar el aviso de las minas.
+- Se cambia a version formal 1.0 y se cambia el OS minimo a 18.0 para el emulador: https://appetize.io/app/b_rug4opuulqbsanumxjv5uifvem
