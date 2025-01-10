@@ -22,7 +22,10 @@ struct RankingView: View {
     @State private var mostrarBienvenida = UserDefaults.standard.bool(forKey: "bienvenida")
     
     @State private var mostrarOferta = false
-    @State private var puntosUsuario: Int = 0
+    @State private var recursoOferta = ""
+    @State private var valorOferta = ""
+    @State private var puntosOferta = ""
+    @State private var puntosTotalesUsuario = ""
     
     @State private var tiempoRestante = ""
     @State private var timer: Timer? = nil
@@ -274,7 +277,6 @@ struct RankingView: View {
      
                                 }.onAppear {
                                     mostrarLoading = false
-                                    puntosUsuario = obtenerPuntosUsuario()
                                 }
                             }
                             
@@ -286,7 +288,15 @@ struct RankingView: View {
                             mostrarBienvenida = UserDefaults.standard.bool(forKey: "bienvenida")
                             viewModel.getRanking()
                             viewChartModel.getChart()
-                            viewOfertaModel.getOferta()
+                            viewOfertaModel.getOferta() { valor, recurso, puntos, puntosUser in
+                                if valor != "SinOferta" {
+                                    recursoOferta = recurso
+                                    valorOferta = valor
+                                    puntosOferta = puntos
+                                    puntosTotalesUsuario = puntosUser
+                                    //mostrarOferta = true
+                                }
+                            }
                             showUser = UserDefaults.standard.bool(forKey: "showUser")
                             if mostrarBienvenida {
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
@@ -302,7 +312,7 @@ struct RankingView: View {
                             Button("🤑 ¡Sí!") {
                                 mostrarOferta = false
                             }
-                        } message: { Text("¡Tu empresa \(usuario ?? "") acaba de encontrar una mina de Y!\n\nTienes la posibilidad de añadir X unidades de Y (Z puntos) a tu almacén a cambio de TODOS tus recursos (\(puntosUsuario) puntos). \n\n⚠️ Recuerda que esta acción afectará al valor de Y para ti y el resto de empresas.\n\n¿Estás de acuerdo?") }
+                        } message: { Text("¡Tu empresa \(usuario ?? "") acaba de encontrar una mina de \(recursoOferta)!\n\nTienes la posibilidad de añadir \(valorOferta) unidades de \(recursoOferta) (\(puntosOferta) puntos) a tu almacén a cambio de TODOS tus recursos (\(puntosTotalesUsuario) puntos). \n\n⚠️ Recuerda que esta acción afectará al valor de \(recursoOferta) para ti y para el resto de empresas.\n\n¿Estás de acuerdo?") }
                     }.navigationTitle("Ranking 🚀")
                     
                 
@@ -347,15 +357,6 @@ struct RankingView: View {
             }
         }
 
-    private func obtenerPuntosUsuario() -> Int {
-        if let puntosString = viewModel.ranking.first(where: { $0.name == usuario })?.points,
-               let puntosInt = Int(puntosString) {
-                print("Puntos encontrados: \(puntosInt)")
-                return puntosInt
-            }
-            print("No se encontraron puntos o no se pudo convertir a Int")
-            return 0
-    }
         
     func convertToLocalTime(hour: Int, minute: Int, fromTimeZoneAbbreviation: String) -> String? {
         // Crear el calendario y la fecha actual
