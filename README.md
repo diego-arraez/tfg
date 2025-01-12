@@ -1,8 +1,8 @@
 ## Emulador para Final release 1.0: 
-https://appetize.io/app/b_rug4opuulqbsanumxjv5uifvem
-https://appetize.io/app/b_7fejk2swstipubzjltp4q2wpg4
-https://appetize.io/app/b_keporob6bwsujarnpnqyk7qbiy
-https://appetize.io/app/b_6dmxld4t7pltz5egszvlqaqngi
+- https://appetize.io/app/b_rug4opuulqbsanumxjv5uifvem
+- https://appetize.io/app/b_7fejk2swstipubzjltp4q2wpg4
+- https://appetize.io/app/b_keporob6bwsujarnpnqyk7qbiy
+- https://appetize.io/app/b_6dmxld4t7pltz5egszvlqaqngi
 
 ### Changelog:
 ### v.0.1 (PEC2) - ${\textsf{\color{lightgreen}Compilable}}$
